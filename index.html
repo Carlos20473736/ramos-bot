@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAMOS BOT - Painel ADM</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" style="display: flex;">
+            <div class="brand">
+                <i class="fas fa-robot"></i>
+                <span class="logo-text">RAMOS <span class="badge">ADM</span></span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-section="keys">
+                    <i class="fas fa-key"></i>
+                    <span>Gerenciar Keys</span>
+                </a>
+                <a href="#" class="nav-item" data-section="users">
+                    <i class="fas fa-users"></i>
+                    <span>Usuários</span>
+                </a>
+                <a href="#" class="nav-item" data-section="logs">
+                    <i class="fas fa-history"></i>
+                    <span>Logs</span>
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="admin-info">
+                    <i class="fas fa-user-shield"></i>
+                    <span id="adminEmail">Administrador</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- DASHBOARD SECTION -->
+            <section id="dashboardSection" class="content-section" style="display: block;">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
+                    <span class="current-date" id="currentDate"></span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(45deg, #00d2ff, #3a7bd5);">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="totalKeys">0</span>
+                            <span class="stat-label">Keys Ativas</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(45deg, #22c55e, #16a34a);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="totalUsers">0</span>
+                            <span class="stat-label">Usuários Totais</span>
+                        </div>
+                    </div>
+                    <div class="stat-card online-card">
+                        <div class="stat-icon" style="background: linear-gradient(45deg, #10b981, #059669);">
+                            <i class="fas fa-signal"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="onlineUsers">0</span>
+                            <span class="stat-label">Online Agora</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(45deg, #f59e0b, #d97706);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="expiringKeys">0</span>
+                            <span class="stat-label">Expirando em 7 dias</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(45deg, #ef4444, #dc2626);">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="expiredKeys">0</span>
+                            <span class="stat-label">Keys Expiradas</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="recent-activity">
+                    <h3><i class="fas fa-history"></i> Atividade Recente</h3>
+                    <div class="activity-list" id="recentActivity">
+                        <!-- Atividades serão carregadas aqui -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- KEYS SECTION -->
+            <section id="keysSection" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-key"></i> Gerenciar Keys</h2>
+                    <button id="generateKeyBtn" class="main-action-btn">
+                        <i class="fas fa-plus"></i> GERAR NOVA KEY
+                    </button>
+                </div>
+                
+                <!-- Modal de Geração de Key -->
+                <div id="keyModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3><i class="fas fa-key"></i> Gerar Nova Key</h3>
+                            <button class="close-modal" id="closeKeyModal">&times;</button>
+                        </div>
+                        <form id="keyForm">
+                            <div class="input-group">
+                                <label><i class="fas fa-user"></i> NOME DO CLIENTE</label>
+                                <input type="text" id="clientName" placeholder="Nome do cliente" required>
+                            </div>
+                            <div class="input-group">
+                                <label><i class="fas fa-calendar"></i> DURAÇÃO (DIAS)</label>
+                                <select id="keyDuration">
+                                    <option value="7">7 dias</option>
+                                    <option value="15">15 dias</option>
+                                    <option value="30" selected>30 dias</option>
+                                    <option value="60">60 dias</option>
+                                    <option value="90">90 dias</option>
+                                    <option value="365">1 ano</option>
+                                    <option value="9999">Vitalício</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label><i class="fas fa-desktop"></i> LIMITE DE DISPOSITIVOS</label>
+                                <input type="number" id="deviceLimit" value="1" min="1" max="10">
+                            </div>
+                            <button type="submit" class="main-action-btn">
+                                <i class="fas fa-magic"></i> GERAR KEY
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal de Key Gerada -->
+                <div id="keyResultModal" class="modal" style="display: none;">
+                    <div class="modal-content success-modal">
+                        <div class="modal-header">
+                            <h3><i class="fas fa-check-circle"></i> Key Gerada com Sucesso!</h3>
+                            <button class="close-modal" id="closeKeyResultModal">&times;</button>
+                        </div>
+                        <div class="key-result">
+                            <label>SUA NOVA KEY:</label>
+                            <div class="key-display">
+                                <input type="text" id="generatedKey" readonly>
+                                <button id="copyKeyBtn" class="copy-btn">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <p class="key-info">Envie esta key para o cliente. Ela será validada automaticamente na extensão.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="filters-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchKeys" placeholder="Buscar por nome ou key...">
+                    </div>
+                    <div class="filter-group">
+                        <select id="filterStatus">
+                            <option value="all">Todos os Status</option>
+                            <option value="active">Ativas</option>
+                            <option value="expired">Expiradas</option>
+                            <option value="revoked">Revogadas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tabela de Keys -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Cliente</th>
+                                <th>Status</th>
+                                <th>Criada em</th>
+                                <th>Expira em</th>
+                                <th>Dispositivos</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="keysTableBody">
+                            <!-- Keys serão carregadas aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- USERS SECTION -->
+            <section id="usersSection" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-users"></i> Usuários Ativos</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Conta TikTok</th>
+                                <th>Key Utilizada</th>
+                                <th>Último Acesso</th>
+                                <th>Ações Realizadas</th>
+                                <th>Dispositivo</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Usuários serão carregados aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- LOGS SECTION -->
+            <section id="logsSection" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-history"></i> Logs do Sistema</h2>
+                    <button id="clearLogsBtn" class="danger-btn">
+                        <i class="fas fa-trash"></i> Limpar Logs
+                    </button>
+                </div>
+                <div class="logs-container" id="logsContainer">
+                    <!-- Logs serão carregados aqui -->
+                </div>
+            </section>
+
+            <!-- SETTINGS SECTION -->
+            <section id="settingsSection" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-cog"></i> Configurações</h2>
+                </div>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-shield-alt"></i> Segurança</h3>
+                        <div class="setting-item">
+                            <label>Bloquear múltiplos dispositivos</label>
+                            <label class="switch">
+                                <input type="checkbox" id="blockMultiDevice" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Verificar HWID</label>
+                            <label class="switch">
+                                <input type="checkbox" id="checkHwid">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-bell"></i> Notificações</h3>
+                        <div class="setting-item">
+                            <label>Notificar novas ativações</label>
+                            <label class="switch">
+                                <input type="checkbox" id="notifyActivations" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Notificar keys expirando</label>
+                            <label class="switch">
+                                <input type="checkbox" id="notifyExpiring" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-database"></i> Backup</h3>
+                        <button id="exportDataBtn" class="secondary-btn">
+                            <i class="fas fa-download"></i> Exportar Dados
+                        </button>
+                        <button id="importDataBtn" class="secondary-btn">
+                            <i class="fas fa-upload"></i> Importar Dados
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
