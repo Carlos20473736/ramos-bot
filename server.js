@@ -9,6 +9,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Health check endpoint para Railway
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'RAMOS BOT is running' });
+});
+
 // Servir arquivos estáticos
 app.use(express.static(path.join(__dirname)));
 
@@ -18,6 +23,23 @@ app.get('*', (req, res) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`🚀 RAMOS BOT - Painel ADM rodando em http://localhost:${PORT}`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 RAMOS BOT - Painel ADM rodando em http://0.0.0.0:${PORT}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM recebido. Encerrando servidor gracefully...');
+  server.close(() => {
+    console.log('Servidor encerrado');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT recebido. Encerrando servidor gracefully...');
+  server.close(() => {
+    console.log('Servidor encerrado');
+    process.exit(0);
+  });
 });
