@@ -149,12 +149,26 @@ function setupRealtimeListeners() {
 function updateOnlineCount(users) {
     if (!users) {
         updateOnlineDisplay(0);
+        updateTotalActions(0);
         return;
     }
     
     const usersArray = Object.values(users);
+    
+    // Atualizar online count
     const onlineCount = usersArray.filter(user => isUserOnline(user)).length;
     updateOnlineDisplay(onlineCount);
+
+    // Atualizar total de ações
+    const totalActions = usersArray.reduce((sum, user) => sum + (user.actionsCount || 0), 0);
+    updateTotalActions(totalActions);
+}
+
+function updateTotalActions(count) {
+    const totalActionsEl = document.getElementById('totalActions');
+    if (totalActionsEl) {
+        totalActionsEl.textContent = count.toLocaleString('pt-BR');
+    }
 }
 
 function updateOnlineDisplay(count) {
@@ -295,6 +309,11 @@ async function loadDashboard() {
     
     document.getElementById('totalUsers').textContent = usersArray.length;
     
+    // Calcular total de ações de todos os usuários
+    const totalActions = usersArray.reduce((sum, user) => sum + (user.actionsCount || 0), 0);
+    const totalActionsEl = document.getElementById('totalActions');
+    if (totalActionsEl) totalActionsEl.textContent = totalActions.toLocaleString('pt-BR');
+
     // Contar usuários online
     const onlineCount = usersArray.filter(user => isUserOnline(user)).length;
     updateOnlineDisplay(onlineCount);
