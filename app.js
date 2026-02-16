@@ -370,11 +370,21 @@ closeKeyResultModal.addEventListener('click', () => {
     keyResultModal.style.display = 'none';
 });
 
+// Função auxiliar para formatar duração
+function formatDuration(duration) {
+    if (duration === 9999) return 'Vitalício';
+    if (duration < 1) {
+        const hours = Math.round(duration * 24);
+        return hours + ' hora(s)';
+    }
+    return duration + ' dia(s)';
+}
+
 keyForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const clientName = document.getElementById('clientName').value;
-    const duration = parseInt(document.getElementById('keyDuration').value);
+    const duration = parseFloat(document.getElementById('keyDuration').value);
     const deviceLimit = parseInt(document.getElementById('deviceLimit').value);
 
     const newKey = generateKey();
@@ -403,7 +413,7 @@ keyForm.addEventListener('submit', async (e) => {
         document.getElementById('generatedKey').value = newKey;
         keyResultModal.style.display = 'flex';
 
-        addLog('success', 'Nova key gerada', `Cliente: ${clientName} | Duração: ${duration === 9999 ? 'Vitalício' : duration + ' dias'} | Limite: ${deviceLimit} dispositivo(s)`);
+        addLog('success', 'Nova key gerada', `Cliente: ${clientName} | Duração: ${formatDuration(duration)} | Limite: ${deviceLimit} dispositivo(s)`);
         showToast('Key gerada com sucesso!', 'success');
         loadKeys();
         loadDashboard();
